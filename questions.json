@@ -1,0 +1,156 @@
+{
+  "History": [
+    {
+      "question": "World War I began in which year?",
+      "options": [
+        "1923",
+        "1938",
+        "1917",
+        "1914"
+      ],
+      "answer": "1914",
+      "type": "Multiple Choice"
+    },
+    {
+      "question": "Adolf Hitler was born in which country?",
+      "options": [
+        "France",
+        "Germany",
+        "Austria",
+        "Hungary"
+      ],
+      "answer": "Austria",
+      "type": "Multiple Choice"
+    },
+    {
+      "question": "John F. Kennedy was assassinated in",
+      "options": [
+        "Austin",
+        "Dallas",
+        "Chicago",
+        "New York"
+      ],
+      "answer": "Dallas",
+      "type": "Multiple Choice"
+    },
+    {
+      "question": "American involvement in the Korean War took place in which decade?",
+      "options": [
+        "1970s",
+        "1950s",
+        "1920s",
+        "1960s"
+      ],
+      "answer": "1950s",
+      "type": "Multiple Choice"
+    },
+    {
+      "question": "This man wrote a document known as the 95 Theses.",
+      "answer": "Martin Luther",
+      "image": "http://a2.files.biography.com/image/upload/c_fit,cs_srgb,dpr_1.0,h_1200,q_80,w_1200/MTE1ODA0OTcxNzA3MjM3OTAx.jpg",
+      "type": "One Word Answer"
+    },
+    {
+      "question": "Who was the first Western explorer to reach China?",
+      "answer": "Marco Polo",
+      "type": "One Word Answer"
+    },
+    {
+      "question": "The Battle of Hastings in 1066 was fought in which country?",
+      "answer": "England",
+      "type": "One Word Answer"
+    }
+  ],
+  "Maths": [
+    {
+      "question": "The value of x + x(xx) when x = 2 is:",
+      "options": [
+        "10",
+        "16",
+        "18",
+        "36"
+      ],
+      "answer": "10",
+      "type": "Multiple Choice"
+    },
+    {
+      "question": "Mr. Jones sold two pipes at $1.20 each. Based on the cost, his profit one was 20% and his loss on the other was 20%. On the sale of the pipes, he:",
+      "options": [
+        "broke even",
+        "lost 4 cents",
+        "gained 4 cents",
+        "lost 10 cents"
+      ],
+      "answer": "broke even",
+      "type": "Multiple Choice"
+    },
+    {
+      "question": "If (0.2)x = 2 and log 2 = 0.3010, then the value of x to the nearest tenth is:",
+      "options": [
+        "-10.0",
+        "-0.5",
+        "-0.4",
+        "-0.2"
+      ],
+      "answer": "-0.4",
+      "type": "Multiple Choice"
+    },
+    {
+      "question": "The sum of three numbers is 98. The ratio of the first to the second is 2/3, and the ratio of the second to the third is 5/8. The second number is",
+      "answer": "30",
+      "type": "One Word Answer"
+    },
+    {
+      "question": "The probability that an electronic device produced by a company does not function properly is equal to 0.1. If 10 devices are bought, then the probability, to the nearest thousandth, that 7 devices function properly is",
+      "answer": "0.057",
+      "type": "One Word Answer"
+    }
+  ],
+  "Animals": [
+    {
+      "question": "How many hearts does an octopus have?",
+      "options": [
+        "9",
+        "5",
+        "3",
+        "2"
+      ],
+      "answer": "3",
+      "image": "http://align4profit.com/wp-content/uploads/2015/06/octopus_red-on-white-300x274.jpg",
+      "type": "Multiple Choice"
+    },
+    {
+      "question": "An earthworm breathe with the help of",
+      "options": [
+        "Lungs",
+        "Ears",
+        "Nose",
+        "Skin"
+      ],
+      "answer": "Skin",
+      "image": "https://assets.rbl.ms/6453021/980x.jpg",
+      "type": "Multiple Choice"
+    },
+    {
+      "question": "Which animal has largest brain in the world",
+      "options": [
+        "Dolphin",
+        "Octopus",
+        "Blue Whale",
+        "Sperm Whale"
+      ],
+      "answer": "Sperm Whale",
+      "type": "Multiple Choice"
+    },
+    {
+      "question": "How many muscles in each ear of a cat?",
+      "answer": "32",
+      "type": "One Word Answer"
+    },
+    {
+      "question": "How many subspecies of tiger found in the world",
+      "answer": "9",
+      "type": "One Word Answer"
+    }
+  ]
+}
