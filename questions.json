@@ -47,7 +47,6 @@
     {
       "question": "This man wrote a document known as the 95 Theses.",
       "answer": "Martin Luther",
-      "image": "http://a2.files.biography.com/image/upload/c_fit,cs_srgb,dpr_1.0,h_1200,q_80,w_1200/MTE1ODA0OTcxNzA3MjM3OTAx.jpg",
       "type": "One Word Answer"
     },
     {
@@ -98,11 +97,6 @@
     {
       "question": "The sum of three numbers is 98. The ratio of the first to the second is 2/3, and the ratio of the second to the third is 5/8. The second number is",
       "answer": "30",
-      "type": "One Word Answer"
-    },
-    {
-      "question": "The probability that an electronic device produced by a company does not function properly is equal to 0.1. If 10 devices are bought, then the probability, to the nearest thousandth, that 7 devices function properly is",
-      "answer": "0.057",
       "type": "One Word Answer"
     }
   ],

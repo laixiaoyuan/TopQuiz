@@ -2,6 +2,7 @@ package UI;
 
 import QuizData.Question;
 import QuizData.QuestionBank;
+import QuizData.QuestionType;
 import QuizData.Score;
 
 import javax.imageio.ImageIO;
@@ -39,30 +40,27 @@ public class QuestionPanel extends JPanel {
     String customerAnswer;
 
     Score score;
-
+    String correctAnswer;
+    Question oneQuestion;
     JPanel timerPanel;
+    JPanel masterPanel;
     JPanel questionPanel;
+    JPanel currentQuestionPanel;
 
+    public QuestionPanel(String startTopic) {
 
-//    QuestionBank questionBank;
-
-
-    public QuestionPanel() {
-
-        super();
         setLayout(new BorderLayout());
+        setBorder(outline);
 
-        timerPanel = createTimerPanel();
-        questionPanel = createQuestionPanel();
-        add(timerPanel, BorderLayout.NORTH);
-        add(questionPanel, BorderLayout.CENTER);
-
-//        questionBank = new QuestionBank();
-        questionNumber = 0;
+        this.startTopic = startTopic;
         score = new Score();
-
+        questionNumber = 0;
         radioBtnEventHandler = new RadioButtonEventHandler();
 
+        timerPanel = createTimerPanel();
+        questionPanel = createMasterPanel();
+        add(timerPanel, BorderLayout.NORTH);
+        add(questionPanel, BorderLayout.CENTER);
     }
 
     class RadioButtonEventHandler implements ActionListener {
@@ -90,23 +88,10 @@ public class QuestionPanel extends JPanel {
             case "Maths":
                 return "Animals";
             case "Animals":
-                return "Maths";
+                return "History";
             default:
                 return null;
         }
-    }
-
-    @Override
-    public void show() {
-        super.show();
-        count = 30;
-        timer.restart();
-    }
-
-    @Override
-    public void hide() {
-        super.hide();
-        count = 30;
     }
 
     /**
@@ -122,10 +107,23 @@ public class QuestionPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (count <= 0) {
-                    timer.stop();
-
-                    // go to next question
-
+                    questionNumber++;
+                    if (QuestionBank.getQBank().getOneQuestion(startTopic, questionNumber) == null) {
+                        String newTopic = changeTopic(startTopic);
+                        startTopic = newTopic;
+                        questionNumber = 0;
+                    }
+                    oneQuestion = QuestionBank.getQBank().getOneQuestion(startTopic, questionNumber);
+                    correctAnswer = oneQuestion.getAnswer();
+                    JPanel newQuestionPanel = createQuestionPanel(oneQuestion);
+                    newQuestionPanel.setVisible(true);
+                    masterPanel.remove(currentQuestionPanel);
+                    currentQuestionPanel = newQuestionPanel;
+                    masterPanel.add(newQuestionPanel, BorderLayout.CENTER);
+                    masterPanel.revalidate();
+                    masterPanel.repaint();
+                    count = 30;
+                    timer.restart();
                 }
                 displayTime.setText(count.toString());
                 if (isVisible()){
@@ -144,10 +142,12 @@ public class QuestionPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(null, "Quiz is now stopped.");
                 timer.stop();
-                mainPanel = (JPanel) timeControl.getParent().getParent();
 
-                mainCards = (CardLayout) mainPanel.getLayout();
-                mainCards.show(mainPanel, "barGraph");
+                timeControl.getParent().setVisible(false);
+                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(timeControl);
+                JPanel scorePanel = new ScorePanel(score);
+                scorePanel.setVisible(true);
+                topFrame.add(scorePanel);
             }
         });
 
@@ -156,72 +156,101 @@ public class QuestionPanel extends JPanel {
         return timeControl;
     }
 
-    private JPanel createQuestionPanel() {
-
-        Question oneQuestion = QuestionBank.getQBank().getOneQuestion(startTopic, questionNumber);
+    private JPanel createMasterPanel() {
+        oneQuestion = QuestionBank.getQBank().getOneQuestion(startTopic, questionNumber);
         if (oneQuestion == null) {
             questionNumber = 0;
             oneQuestion = QuestionBank.getQBank().getOneQuestion(changeTopic(startTopic), questionNumber);
         }
         score.addQuestionAttempt(startTopic);
 
-        JPanel questionPanel = new JPanel();
-        questionPanel.setBorder(outline);
-        CardLayout cardLayout = new CardLayout();
-        questionPanel.setLayout(cardLayout);
-
-        JPanel multiChoicesPanel = createMultipleChoicesPanel(oneQuestion);
-        JPanel oneWordAnswerPanel = createOneWordAnswerPanel(oneQuestion);
-
-        questionPanel.add(multiChoicesPanel, "multiChoices");
-        questionPanel.add(oneWordAnswerPanel, "oneWordAnswer");
-
-        switch (oneQuestion.getType()) {
-            case MULTIPLECHOICES:
-                cardLayout.show(questionPanel, "multiChoices");
-                break;
-            case ONEWORDANSWER:
-                cardLayout.show(questionPanel, "oneWordAnswer");
-                break;
-        }
-
-        JPanel masterPanel = new JPanel();
+        masterPanel = new JPanel();
         masterPanel.setLayout(new BorderLayout());
-        masterPanel.add(questionPanel, BorderLayout.CENTER);
 
-        String correctAnswer = oneQuestion.getAnswer();
+        JPanel questionPanel = createQuestionPanel(oneQuestion);
+        currentQuestionPanel = questionPanel;
+        masterPanel.add(questionPanel);
+
+        JPanel buttonPanel = new JPanel();
+        correctAnswer = oneQuestion.getAnswer();
 
         JButton nextQuestionBtn = new JButton("Next");
         nextQuestionBtn.setFont(fontSmall);
         nextQuestionBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (customerAnswer.equals(correctAnswer)) {
+                score.addQuestionAttempt(startTopic);
+
+                if (customerAnswer != null && customerAnswer.equals(correctAnswer)) {
                     score.addCorrectQNo(startTopic);
                 }
-                JOptionPane.showMessageDialog(null, "Go to the next question.");
+                questionNumber++;
+                if (QuestionBank.getQBank().getOneQuestion(startTopic, questionNumber) == null) {
+                    String newTopic = changeTopic(startTopic);
+                    startTopic = newTopic;
+                    questionNumber = 0;
+                }
+                oneQuestion = QuestionBank.getQBank().getOneQuestion(startTopic, questionNumber);
+                correctAnswer = oneQuestion.getAnswer();
+                JPanel newQuestionPanel = createQuestionPanel(oneQuestion);
+                newQuestionPanel.setVisible(true);
+                masterPanel.remove(currentQuestionPanel);
+                currentQuestionPanel = newQuestionPanel;
+                masterPanel.add(newQuestionPanel, BorderLayout.CENTER);
+                masterPanel.revalidate();
+                masterPanel.repaint();
+
+                count = 30;
+                timer.restart();
+
             }
         });
-        masterPanel.add(nextQuestionBtn, BorderLayout.SOUTH);
+        buttonPanel.add(nextQuestionBtn);
 
         JButton nextTopic = new JButton("Next Topic");
         nextTopic.setFont(fontSmall);
         nextTopic.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (customerAnswer.equals(correctAnswer)) {
+                score.addQuestionAttempt(startTopic);
+
+                if (customerAnswer != null && customerAnswer.equals(correctAnswer)) {
                     score.addCorrectQNo(startTopic);
                 }
-                JOptionPane.showMessageDialog(null, "Select another topic.");
                 String newTopic = changeTopic(startTopic);
                 startTopic = newTopic;
+                questionNumber = 0;
+                oneQuestion = QuestionBank.getQBank().getOneQuestion(startTopic, questionNumber);
+                correctAnswer = oneQuestion.getAnswer();
+                JPanel newQuestionPanel = createQuestionPanel(oneQuestion);
+                newQuestionPanel.setVisible(true);
+                masterPanel.remove(currentQuestionPanel);
+                currentQuestionPanel = newQuestionPanel;
+                masterPanel.add(newQuestionPanel, BorderLayout.CENTER);
+                masterPanel.revalidate();
+                masterPanel.repaint();
+
+                count = 30;
+                timer.restart();
 
             }
         });
-        masterPanel.add(nextTopic, BorderLayout.SOUTH);
-
+        buttonPanel.add(nextTopic);
+        masterPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         return masterPanel;
+    }
+    private JPanel createQuestionPanel(Question question) {
+        switch (question.getType()) {
+            case MULTIPLECHOICES:
+                JPanel multiChoicesPanel = createMultipleChoicesPanel(question);
+                return multiChoicesPanel;
+            case ONEWORDANSWER:
+                JPanel oneWordAnswerPanel = createOneWordAnswerPanel(question);
+                return oneWordAnswerPanel;
+            default:
+                return null;
+        }
     }
 
     private JPanel createMultipleChoicesPanel(Question oneQuestion) {
@@ -231,26 +260,37 @@ public class QuestionPanel extends JPanel {
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 
         JLabel question = new JLabel(oneQuestion.getQuestion());
-        question.setFont(fontBig);
-        leftPanel.add(question);
-        leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        question.setFont(fontSmall);
 
+        leftPanel.add(question);
+
+        ButtonGroup group = new ButtonGroup();
         choiceA = new JRadioButton(oneQuestion.getChoice()[0]);
         choiceA.setFont(fontSmall);
-        leftPanel.add(choiceA);
+        choiceA.addActionListener(radioBtnEventHandler);
 
         choiceB = new JRadioButton(oneQuestion.getChoice()[1]);
         choiceB.setFont(fontSmall);
-        leftPanel.add(choiceB);
+        choiceB.addActionListener(radioBtnEventHandler);
+        group.add(choiceB);
 
         choiceC = new JRadioButton(oneQuestion.getChoice()[2]);
         choiceC.setFont(fontSmall);
-        leftPanel.add(choiceC);
+        choiceC.addActionListener(radioBtnEventHandler);
+        group.add(choiceC);
 
         choiceD = new JRadioButton(oneQuestion.getChoice()[3]);
         choiceD.setFont(fontSmall);
+        choiceD.addActionListener(radioBtnEventHandler);
+
+        group.add(choiceA);
+        group.add(choiceB);
+        group.add(choiceC);
+        group.add(choiceD);
+        leftPanel.add(choiceA);
+        leftPanel.add(choiceB);
+        leftPanel.add(choiceC);
         leftPanel.add(choiceD);
-        leftPanel.add(Box.createRigidArea(new Dimension(0, 20)));
 
         // right panel to show image if there is one
         JPanel rightPanel = new JPanel();
@@ -277,14 +317,17 @@ public class QuestionPanel extends JPanel {
 
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 
-        JLabel question = new JLabel(oneQuestion.getQuestion());
-        question.setFont(fontBig);
-        leftPanel.add(question);
-        leftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        JLabel question = new JLabel("<html><p>" + oneQuestion.getQuestion() + "</p></html>");
+        question.setFont(fontSmall);
 
-        JTextField answerArea = new JTextField(20);
+        leftPanel.add(question);
+
+        JTextField answerArea = new JTextField(5);
+        answerArea.setBorder(outline);
+        answerArea.setPreferredSize(new Dimension(200, 24));
         leftPanel.add(answerArea);
-        leftPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+
+        customerAnswer = answerArea.getText();
 
         // right panel to show image if there is one
         JPanel rightPanel = new JPanel();
@@ -298,7 +341,12 @@ public class QuestionPanel extends JPanel {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            finally {
+                JLabel label = new JLabel(" ");
+                rightPanel.add(label);
+            }
         }
+
         panel.add(leftPanel, BorderLayout.WEST);
         panel.add(rightPanel, BorderLayout.EAST);
 

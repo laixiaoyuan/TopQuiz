@@ -11,9 +11,6 @@ import java.awt.event.ActionListener;
  */
 public class TopicPanel extends JPanel {
 
-    CardLayout mainCards;
-    JPanel mainPanel;
-
     Font fontBig = new Font("Arial", Font.BOLD, 30);
     Font fontSmall = new Font("Arial", Font.PLAIN, 20);
 
@@ -21,7 +18,6 @@ public class TopicPanel extends JPanel {
     String topicName2 = "Maths";
     String topicName3 = "Animals";
 
-    protected String selectedTopic;
 
     Border outline = BorderFactory.createLineBorder(Color.BLACK);
 
@@ -72,13 +68,14 @@ public class TopicPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(null, "You selected: " + buttonName);
-                mainPanel = (JPanel) panel.getParent().getParent();
+                panel.getParent().setVisible(false);
 
-                mainCards = (CardLayout) mainPanel.getLayout();
-                mainCards.show(mainPanel, "question");
-                selectedTopic = buttonName;
-
+                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(panel);
+                JPanel questionPanel = new QuestionPanel(buttonName);
+                questionPanel.setVisible(true);
+                topFrame.add(questionPanel);
             }
         });
     }
+
 }
