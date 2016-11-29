@@ -46,6 +46,9 @@ public class QuestionPanel extends JPanel {
     JPanel masterPanel;
     JPanel questionPanel;
     JPanel currentQuestionPanel;
+    Display display;
+
+    int colorIndex;
 
     public QuestionPanel(String startTopic) {
 
@@ -101,12 +104,24 @@ public class QuestionPanel extends JPanel {
     private JPanel createTimerPanel() {
         JPanel timeControl = new JPanel();
         displayTime = new JLabel();
+
+        display = new Display();
+        colorIndex = 0;
         count = 30;
 
         ActionListener taskPerformer = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (count > 10) {
+                    displayTime.setFont(fontSmall);
+                    displayTime.setForeground(Color.BLUE);
+                }
+                if (count <= 10 && count > 0) {
+                    displayTime.setFont(fontBig);
+                    displayTime.setForeground(Color.RED);
+                }
                 if (count <= 0) {
+
                     questionNumber++;
                     if (QuestionBank.getQBank().getOneQuestion(startTopic, questionNumber) == null) {
                         String newTopic = changeTopic(startTopic);
@@ -123,9 +138,11 @@ public class QuestionPanel extends JPanel {
                     masterPanel.revalidate();
                     masterPanel.repaint();
                     count = 30;
+
                     timer.restart();
                 }
                 displayTime.setText(count.toString());
+
                 if (isVisible()){
                     count --;
                 }
@@ -135,6 +152,7 @@ public class QuestionPanel extends JPanel {
         timer.start();
 
         timeControl.add(displayTime);
+        timeControl.add(display);
 
         JButton stopButton = new JButton("Stop");
         stopButton.addActionListener(new ActionListener() {
@@ -201,6 +219,7 @@ public class QuestionPanel extends JPanel {
                 masterPanel.repaint();
 
                 count = 30;
+                colorIndex = 0;
                 timer.restart();
 
             }
@@ -352,7 +371,13 @@ public class QuestionPanel extends JPanel {
 
         return panel;
     }
+    private class Display extends JPanel {
 
+        public void setColor(Color color){
+
+            setBackground(color);
+        }
+    }
 
 
 }
